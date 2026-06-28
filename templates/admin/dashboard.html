@@ -35,62 +35,20 @@ Admin Dashboard
 </div>
 
 <!-- STATS -->
-<div class="row g-4 mb-5">
-
-    <div class="col-lg-3 col-md-6">
-        <div class="card shadow text-center">
-            <div class="card-body">
-                <h5>Total Complaints</h5>
-                <h2 class="text-primary">{{ complaints|length }}</h2>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-lg-3 col-md-6">
-        <div class="card shadow text-center">
-            <div class="card-body">
-                <h5>Pending</h5>
-                <h2 class="text-warning">
-                    {{ complaints|dictsort:"status"|length }}
-                </h2>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-lg-3 col-md-6">
-        <div class="card shadow text-center">
-            <div class="card-body">
-                <h5>Investigating</h5>
-                <h2 class="text-info">
-                    {{ complaints|dictsort:"status"|length }}
-                </h2>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-lg-3 col-md-6">
-        <div class="card shadow text-center">
-            <div class="card-body">
-                <h5>Closed</h5>
-                <h2 class="text-success">
-                    {{ complaints|dictsort:"status"|length }}
-                </h2>
-            </div>
-        </div>
-    </div>
-
-</div>
 
 <!-- SEARCH FILTER -->
-<form method="GET" class="row mb-3">
-
-    <div class="col-md-6">
-        <input type="text" name="search" class="form-control"
-               placeholder="Search Complaint ID / Title">
-    </div>
+<form method="GET" class="row g-3 mb-4">
 
     <div class="col-md-4">
-        <select name="status" class="form-control">
+        <input
+            type="text"
+            name="search"
+            class="form-control"
+            placeholder="Search Username / Case No / Title / Category">
+    </div>
+
+    <div class="col-md-3">
+        <select name="status" class="form-select">
             <option value="">All Status</option>
             <option value="Pending">Pending</option>
             <option value="Assigned">Assigned</option>
@@ -99,8 +57,39 @@ Admin Dashboard
         </select>
     </div>
 
+    <div class="col-md-3">
+        <select name="category" class="form-select">
+            
+
+            
+
+            <option value="">All Crime Categories</option>
+
+            <option value="Theft">Theft</option>
+            <option value="Robbery">Robbery</option>
+            <option value="Murder">Murder</option>
+            <option value="Assault">Assault</option>
+            <option value="Cyber Crime">Cyber Crime</option>
+            <option value="Domestic Violence">Domestic Violence</option>
+            <option value="Missing Person">Missing Person</option>
+            <option value="Kidnapping">Kidnapping</option>
+            <option value="Fraud">Fraud</option>
+            <option value="Drug Crime">Drug Crime</option>
+            <option value="Vehicle Theft">Vehicle Theft</option>
+            <option value="Traffic Violation">Traffic Violation</option>
+            <option value="Other">Other</option>
+
+        </select>
+            
+        
+
+        
+    </div>
+
     <div class="col-md-2">
-        <button class="btn btn-primary w-100">🔍 Search</button>
+        <button class="btn btn-primary w-100">
+            🔍 Search
+        </button>
     </div>
 
 </form>
@@ -119,6 +108,7 @@ Admin Dashboard
             <thead class="table-primary">
                 <tr>
                     <th>ID</th>
+                    <th>Username</th>
                     <th>Category</th>
                     <th>Title</th>
                     <th>Status</th>
@@ -126,6 +116,7 @@ Admin Dashboard
                     <th>Remarks</th>
                     <th>Submitted</th>
                     <th>Actions</th>
+                    
                 </tr>
             </thead>
 
@@ -137,6 +128,7 @@ Admin Dashboard
 
                     <td><strong>#{{ complaint.complaint_number }}</strong></td>
 
+                    <td>{{ complaint.username }}</td>
                     <td>
                         <span class="badge bg-secondary">
                             {{ complaint.category }}

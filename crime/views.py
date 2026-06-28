@@ -75,15 +75,13 @@ def citizen_dashboard(request):
 
 
 # ---------------- DASHBOARD REDIRECT FIX ----------------
+from django.shortcuts import render
 
-@login_required
 def dashboard(request):
-    if request.user.is_superuser:
-        return redirect("admin_dashboard")
-    elif request.user.groups.filter(name="police").exists():
-        return redirect("police_dashboard")
-    else:
-        return redirect("citizen_dashboard")
+
+    return render(request, "dashboard.html", {
+        "total": 102
+    })
 
 # ---------------- SUBMIT ----------------
 @login_required
@@ -167,31 +165,49 @@ def update_case(request, id):
 
 
 # ---------------- ADMIN DASHBOARD ----------------
-@staff_member_required
+from django.db.models import Q
+from .models import Complaint
+
 def admin_dashboard(request):
 
     complaints = Complaint.objects.all().order_by("-created_at")
 
     search = request.GET.get("search")
     status = request.GET.get("status")
+    category = request.GET.get("category")
 
+    
+    
     if search:
-        complaints = complaints.filter(title__icontains=search)
+        complaints = complaints.filter(
+            Q(user__username__icontains=search) |
+            Q(complaint_number__icontains=search) |
+            Q(title__icontains=search) |
+            Q(category__icontains=search) |
+            Q(status__icontains=search) |
+            Q(assigned_officer__username__icontains=search) |
+            Q(remarks__icontains=search)
+        )
 
     if status:
         complaints = complaints.filter(status=status)
 
+    if category:
+        complaints = complaints.filter(category=category)
+
+    categories = (
+        Complaint.objects
+        .values_list("category", flat=True)
+        .distinct()
+        .order_by("category")
+    )
+
     context = {
         "complaints": complaints,
-        "total": Complaint.objects.count(),
-        "pending": Complaint.objects.filter(status="Pending").count(),
-        "assigned": Complaint.objects.filter(status="Assigned").count(),
-        "investigating": Complaint.objects.filter(status="Investigating").count(),
-        "closed": Complaint.objects.filter(status="Closed").count(),
+        "categories": categories,
     }
 
     return render(request, "admin/dashboard.html", context)
-
 # ---------------- ASSIGN OFFICER ----------------
 @staff_member_required
 def assign_officer(request, id):
