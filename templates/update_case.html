@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block title %}
+Update Case
+{% endblock %}
+
+{% block content %}
+
+<div class="container py-5">
+
+    <div class="row justify-content-center">
+
+        <div class="col-lg-7 col-md-9">
+
+            <div class="card shadow-lg border-0 rounded-4">
+
+                <!-- HEADER -->
+                <div class="card-header bg-warning text-dark text-center py-3 rounded-top-4">
+                    <h4 class="mb-0">⚖️ Update Complaint Case</h4>
+                    <small class="text-muted">Police Officer Panel</small>
+                </div>
+
+
+                <div class="card-body p-4">
+
+                    <!-- COMPLAINT INFO -->
+                    <div class="mb-4">
+
+                        <label class="form-label fw-semibold">Complaint Title</label>
+
+                        <div class="form-control bg-light">
+                            {{ complaint.title }}
+                        </div>
+
+                    </div>
+
+                    <!-- FORM -->
+                    <form method="POST">
+                        {% csrf_token %}
+
+                        <!-- STATUS -->
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Case Status</label>
+
+                            <select name="status" class="form-select" required>
+                                <option value="Pending">Pending</option>
+                                <option value="Assigned">Assigned</option>
+                                <option value="Investigating">Investigating</option>
+                                <option value="Closed">Closed</option>
+                            </select>
+
+                        </div>
+
+                        <!-- REMARKS -->
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Investigation Remarks</label>
+
+                            <textarea
+                                name="remarks"
+                                rows="5"
+                                class="form-control"
+                                placeholder="Enter investigation updates...">{{ complaint.remarks }}</textarea>
+
+                        </div>
+
+                        <!-- BUTTONS -->
+                        <div class="d-flex justify-content-between mt-4">
+
+                            <!-- FIXED BACK LINK -->
+                            <a href="{% url 'police_dashboard' %}" class="btn btn-outline-secondary">
+                                ← Back
+                            </a>
+
+                            <button type="submit" class="btn btn-success px-4">
+                                ✅ Update Case
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

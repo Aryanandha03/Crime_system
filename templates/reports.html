@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% block title %}
+Reports Dashboard
+{% endblock %}
+
+{% block content %}
+
+<div class="container py-4">
+
+    <!-- HEADER -->
+    <div class="text-center mb-4">
+        <h2 class="fw-bold">📊 Crime Reports Dashboard</h2>
+        <p class="text-muted">System statistics overview</p>
+    </div>
+
+    <!-- STATS CARDS -->
+    <div class="row g-4">
+
+        <!-- Total -->
+        <div class="col-md-4 col-lg-3">
+            <div class="card border-0 shadow-sm text-center bg-dark text-white">
+                <div class="card-body py-4">
+                    <h6 class="text-uppercase">Total Complaints</h6>
+                    <h2 class="fw-bold">{{ total }}</h2>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pending -->
+        <div class="col-md-4 col-lg-3">
+            <div class="card border-0 shadow-sm text-center bg-warning">
+                <div class="card-body py-4">
+                    <h6 class="text-uppercase text-dark">Pending</h6>
+                    <h2 class="fw-bold text-dark">{{ pending }}</h2>
+                </div>
+            </div>
+        </div>
+
+        <!-- Assigned -->
+        <div class="col-md-4 col-lg-3">
+            <div class="card border-0 shadow-sm text-center bg-primary text-white">
+                <div class="card-body py-4">
+                    <h6 class="text-uppercase">Assigned</h6>
+                    <h2 class="fw-bold">{{ assigned }}</h2>
+                </div>
+            </div>
+        </div>
+
+        <!-- Investigating -->
+        <div class="col-md-4 col-lg-3">
+            <div class="card border-0 shadow-sm text-center bg-info">
+                <div class="card-body py-4">
+                    <h6 class="text-uppercase text-dark">Investigating</h6>
+                    <h2 class="fw-bold text-dark">{{ investigating }}</h2>
+                </div>
+            </div>
+        </div>
+
+        <!-- Closed -->
+        <div class="col-md-4 col-lg-3">
+            <div class="card border-0 shadow-sm text-center bg-success text-white">
+                <div class="card-body py-4">
+                    <h6 class="text-uppercase">Closed</h6>
+                    <h2 class="fw-bold">{{ closed }}</h2>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- BACK BUTTON -->
+    <div class="text-center mt-5">
+        <a href="{% url 'admin_dashboard' %}" class="btn btn-outline-secondary px-4">
+            ⬅ Back to Admin Dashboard
+        </a>
+    </div>
+
+</div>
+
+{% endblock %}

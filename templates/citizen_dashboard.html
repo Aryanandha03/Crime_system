@@ -1,0 +1,347 @@
+{% extends "base.html" %}
+
+{% block title %}
+Citizen Dashboard
+{% endblock %}
+
+{% block content %}
+
+
+<style>
+
+:root{
+    --primary:#2563eb;
+    --primary-dark:#1d4ed8;
+    --success:#16a34a;
+    --warning:#f59e0b;
+    --info:#06b6d4;
+    --danger:#ef4444;
+    --light:#f8fafc;
+    --border:#e2e8f0;
+}
+
+/* Page */
+body{
+    background:#f5f7fb;
+}
+
+/* Header Card */
+.card-body.bg-primary{
+    background:linear-gradient(135deg,#2563eb,#1d4ed8)!important;
+    border-radius:18px;
+    padding:35px;
+}
+
+.card-body.bg-primary h2{
+    font-weight:700;
+    font-size:32px;
+}
+
+.card-body.bg-primary p{
+    opacity:.9;
+    font-size:16px;
+}
+
+/* Buttons */
+.btn{
+    border-radius:12px;
+    font-weight:600;
+    transition:.3s;
+}
+
+.btn-success{
+    background:#16a34a;
+    border:none;
+}
+
+.btn-success:hover{
+    background:#15803d;
+    transform:translateY(-2px);
+}
+
+.btn-outline-primary{
+    border:2px solid #2563eb;
+}
+
+.btn-outline-primary:hover{
+    background:#2563eb;
+}
+
+.btn-primary:hover{
+    transform:translateY(-2px);
+}
+
+/* Cards */
+.card{
+    border:none;
+    border-radius:18px;
+    box-shadow:0 10px 30px rgba(0,0,0,.08);
+    transition:.3s;
+}
+
+.card:hover{
+    transform:translateY(-5px);
+    box-shadow:0 18px 40px rgba(0,0,0,.12);
+}
+
+/* Stats */
+.row .card-body h5{
+    color:#64748b;
+    font-size:15px;
+    font-weight:600;
+}
+
+.row .card-body h2{
+    font-size:38px;
+    font-weight:700;
+}
+
+/* Table Card */
+.card-header.bg-dark{
+    background:linear-gradient(135deg,#0f172a,#1e293b)!important;
+    padding:18px;
+    font-size:20px;
+    font-weight:600;
+}
+
+/* Table */
+.table{
+    margin-bottom:0;
+}
+
+.table thead{
+    background:#eff6ff;
+}
+
+.table thead th{
+    border:none;
+    color:#1e293b;
+    font-weight:700;
+    padding:16px;
+}
+
+.table tbody td{
+    padding:16px;
+    vertical-align:middle;
+    border-color:#eef2f7;
+}
+
+.table tbody tr{
+    transition:.25s;
+}
+
+.table tbody tr:hover{
+    background:#f8fbff;
+}
+
+/* Badges */
+.badge{
+    padding:8px 14px;
+    border-radius:30px;
+    font-size:13px;
+    font-weight:600;
+}
+
+/* View Button */
+.btn-sm{
+    border-radius:10px;
+    padding:6px 14px;
+    font-weight:600;
+}
+
+/* Officer */
+.text-muted{
+    color:#94a3b8!important;
+}
+
+/* Responsive */
+@media(max-width:768px){
+
+.card-body.bg-primary{
+    text-align:center;
+}
+
+.card-body.bg-primary h2{
+    font-size:24px;
+}
+
+.table{
+    font-size:14px;
+}
+
+.btn{
+    width:100%;
+    margin-bottom:10px;
+}
+
+}
+
+</style>
+
+
+<div class="container mt-4">
+
+<!-- HEADER -->
+<div class="card shadow-lg border-0 mb-4">
+    <div class="card-body bg-primary text-white rounded">
+        <h2 class="fw-bold">
+            Welcome, {{ request.user.username }}
+        </h2>
+        <p class="mb-0">
+            Submit complaints and track their status.
+        </p>
+    </div>
+</div>
+
+<!-- ACTION BUTTONS -->
+<div class="mb-4">
+
+    <a href="{% url 'submit_complaint' %}" class="btn btn-success me-2">
+        ➕ Submit Complaint
+    </a>
+
+    <a href="{% url 'history' %}" class="btn btn-outline-primary">
+        📜 Complaint History
+    </a>
+
+</div>
+
+<!-- STATS -->
+<div class="row g-4 mb-4">
+
+    <div class="col-lg-3 col-md-6">
+        <div class="card shadow text-center">
+            <div class="card-body">
+                <h5>Total</h5>
+                <h2 class="text-primary">{{ total }}</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-3 col-md-6">
+        <div class="card shadow text-center">
+            <div class="card-body">
+                <h5>Pending</h5>
+                <h2 class="text-warning">{{ pending }}</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-3 col-md-6">
+        <div class="card shadow text-center">
+            <div class="card-body">
+                <h5>Investigating</h5>
+                <h2 class="text-info">{{ investigating }}</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-3 col-md-6">
+        <div class="card shadow text-center">
+            <div class="card-body">
+                <h5>Closed</h5>
+                <h2 class="text-success">{{ closed }}</h2>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- TABLE -->
+<div class="card shadow-lg border-0">
+
+    <div class="card-header bg-dark text-white">
+        My Complaints
+    </div>
+
+    <div class="table-responsive">
+
+        <table class="table table-hover table-striped mb-0">
+
+            <thead class="table-light">
+                <tr>
+                    <th>ID</th>
+                    <th>Category</th>
+                    <th>Title</th>
+                    <th>Status</th>
+                    <th>Officer</th>
+                    <th>Remarks</th>
+                    <th>Date</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+            {% for complaint in complaints %}
+
+                <tr>
+
+                    <td>#{{ complaint.complaint_number }}</td>
+
+                    <td>
+                        <span class="badge bg-secondary">
+                            {{ complaint.category }}
+                        </span>
+                    </td>
+
+                    <td>{{ complaint.title }}</td>
+
+                    <td>
+                        {% if complaint.status == "Pending" %}
+                            <span class="badge bg-warning text-dark">Pending</span>
+                        {% elif complaint.status == "Assigned" %}
+                            <span class="badge bg-primary">Assigned</span>
+                        {% elif complaint.status == "Investigating" %}
+                            <span class="badge bg-info">Investigating</span>
+                        {% else %}
+                            <span class="badge bg-success">Closed</span>
+                        {% endif %}
+                    </td>
+
+                    <td>
+                        {% if complaint.assigned_officer %}
+                            👮 {{ complaint.assigned_officer.username }}
+                        {% else %}
+                            <span class="text-muted">Not Assigned</span>
+                        {% endif %}
+                    </td>
+
+                    <td>
+                        {{ complaint.remarks|default:"No Remarks" }}
+                    </td>
+
+                    <td>
+                        {{ complaint.created_at|date:"d M Y" }}
+                    </td>
+
+                    <td>
+                        <a href="{% url 'complaint_detail' complaint.id %}"
+                           class="btn btn-sm btn-primary">
+                            View
+                        </a>
+                    </td>
+
+                </tr>
+
+            {% empty %}
+
+                <tr>
+                    <td colspan="8" class="text-center p-4">
+                        No complaints submitted yet.
+                    </td>
+                </tr>
+
+            {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+</div>
+
+{% endblock %}

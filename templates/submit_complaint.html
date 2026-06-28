@@ -1,0 +1,159 @@
+{% extends "base.html" %}
+
+{% block title %}
+Submit Complaint
+{% endblock %}
+
+{% block content %}
+
+<div class="container py-4">
+
+    <div class="row justify-content-center">
+
+        <div class="col-lg-10">
+
+            <div class="card shadow-lg border-0 rounded-4">
+
+                <!-- HEADER -->
+                <div class="card-header bg-primary text-white py-4 rounded-top-4">
+
+                    <h2 class="mb-1">🚔 Submit Crime Complaint</h2>
+
+                    <p class="mb-0 small">
+                        Report crimes securely. Only authorized officers can access your complaint.
+                    </p>
+
+                </div>
+
+                <div class="card-body p-4">
+
+                    <!-- ALERT -->
+                    <div class="alert alert-info border-start border-4 border-primary">
+                        <strong>Privacy Notice:</strong>
+                        Your data is protected. False complaints may lead to legal action.
+                    </div>
+
+                    <form method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+
+                        {% if form.errors %}
+                            <div class="alert alert-danger">
+                                Please correct the errors below.
+                            </div>
+                        {% endif %}
+
+                        <!-- ROW 1 -->
+                        <div class="row g-3">
+
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Crime Category</label>
+                                {{ form.category }}
+                                <div class="text-danger small">{{ form.category.errors }}</div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Priority Level</label>
+                                {{ form.priority }}
+                                <div class="text-danger small">{{ form.priority.errors }}</div>
+                            </div>
+
+                        </div>
+
+                        <!-- ROW 2 -->
+                        <div class="row g-3 mt-1">
+
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Mobile Number</label>
+                                {{ form.phone }}
+                                <div class="text-danger small">{{ form.phone.errors }}</div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Date of Crime</label>
+                                {{ form.crime_date }}
+                                <div class="text-danger small">{{ form.crime_date.errors }}</div>
+                            </div>
+
+                        </div>
+
+                        <!-- TITLE -->
+                        <div class="mt-3">
+                            <label class="form-label fw-semibold">Complaint Title</label>
+                            {{ form.title }}
+                            <div class="text-danger small">{{ form.title.errors }}</div>
+                        </div>
+
+                        <!-- DESCRIPTION -->
+                        <div class="mt-3">
+                            <label class="form-label fw-semibold">Incident Description</label>
+                            {{ form.description }}
+                            <div class="text-danger small">{{ form.description.errors }}</div>
+                        </div>
+
+                        <!-- LOCATION -->
+                        <div class="mt-3">
+                            <label class="form-label fw-semibold">Crime Location</label>
+                            {{ form.location }}
+                            <div class="text-danger small">{{ form.location.errors }}</div>
+                        </div>
+
+                        <!-- EVIDENCE -->
+                        <div class="mt-3">
+                            <label class="form-label fw-semibold">Upload Evidence</label>
+                            {{ form.evidence }}
+                            <div class="text-danger small">{{ form.evidence.errors }}</div>
+
+                            <small class="text-muted">
+                                Supported: JPG, PNG, PDF, DOC, DOCX (Max 10MB)
+                            </small>
+                        </div>
+
+                        <!-- ANONYMOUS -->
+                        <div class="form-check mt-3">
+                            {{ form.anonymous }}
+                            <label class="form-check-label">
+                                Submit anonymously
+                            </label>
+                        </div>
+
+                        <!-- WARNING -->
+                        <div class="alert alert-warning mt-4">
+                            <strong>Important:</strong>
+                            False complaints are punishable by law.
+                        </div>
+
+                        <!-- BUTTONS -->
+                        <div class="d-flex justify-content-between mt-4">
+
+                            <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary">
+                                ← Back
+                            </a>
+
+                            <div class="d-flex gap-2">
+
+                                <button type="reset" class="btn btn-outline-warning">
+                                    Reset
+                                </button>
+
+                                <button type="submit" class="btn btn-primary px-4"
+                                    onclick="this.disabled=true;this.innerHTML='Submitting...';this.form.submit();">
+                                    📤 Submit Complaint
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

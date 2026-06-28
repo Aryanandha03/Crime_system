@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+
+{% block title %}Analytics Dashboard{% endblock %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <!-- HEADER -->
+    <div class="mb-4">
+        <h2 class="fw-bold">📊 Crime Analytics Dashboard</h2>
+        <p class="text-muted">Real-time overview of complaints and trends</p>
+    </div>
+
+    <!-- TOP ROW -->
+    <div class="row g-4">
+
+        <!-- STATUS -->
+        <div class="col-lg-6">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header bg-primary text-white fw-semibold">
+                    Complaint Status Overview
+                </div>
+                <div class="card-body">
+                    <canvas id="statusChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- CATEGORY -->
+        <div class="col-lg-6">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header bg-success text-white fw-semibold">
+                    Crime Category Analysis
+                </div>
+                <div class="card-body">
+                    <canvas id="categoryChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- MONTHLY -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-dark text-white fw-semibold">
+                    Monthly Crime Trends
+                </div>
+                <div class="card-body">
+                    <canvas id="monthlyChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- CHART JS -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+
+const statusLabels = {{ labels|safe }};
+const statusValues = {{ values|safe }};
+
+const categoryLabels = {{ category_labels|safe }};
+const categoryValues = {{ category_values|safe }};
+
+const monthlyValues = {{ monthly_values|safe }};
+
+new Chart(document.getElementById("statusChart"), {
+    type: "doughnut",
+    data: {
+        labels: statusLabels,
+        datasets: [{
+            data: statusValues,
+            backgroundColor: [
+                "#f59e0b",
+                "#3b82f6",
+                "#06b6d4",
+                "#10b981"
+            ],
+            borderWidth: 1
+        }]
+    },
+    options: {
+        plugins: {
+            legend: { position: "bottom" }
+        }
+    }
+});
+
+new Chart(document.getElementById("categoryChart"), {
+    type: "bar",
+    data: {
+        labels: categoryLabels,
+        datasets: [{
+            label: "Complaints",
+            data: categoryValues,
+            backgroundColor: "#4f46e5",
+            borderRadius: 8
+        }]
+    },
+    options: {
+        plugins: {
+            legend: { display: false }
+        }
+    }
+});
+
+new Chart(document.getElementById("monthlyChart"), {
+    type: "line",
+    data: {
+        labels: ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],
+        datasets: [{
+            label: "Monthly Complaints",
+            data: monthlyValues,
+            borderColor: "#ef4444",
+            tension: 0.4,
+            fill: false
+        }]
+    }
+});
+
+</script>
+
+{% endblock %}

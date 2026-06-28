@@ -1,0 +1,153 @@
+{% extends "base.html" %}
+
+{% block title %}
+Complaint Details
+{% endblock %}
+
+{% block content %}
+
+<div class="card shadow-lg border-0 complaint-card">
+
+    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+
+        <div>
+            <h3 class="mb-0">
+                Complaint #{{ complaint.complaint_number }}
+            </h3>
+            <small>Submitted by {{ complaint.user.username }}</small>
+        </div>
+
+        <div>
+            {% if complaint.status == "Pending" %}
+                <span class="badge bg-warning text-dark fs-6">Pending</span>
+            {% elif complaint.status == "Assigned" %}
+                <span class="badge bg-primary fs-6">Assigned</span>
+            {% elif complaint.status == "Investigating" %}
+                <span class="badge bg-info fs-6">Investigating</span>
+            {% else %}
+                <span class="badge bg-success fs-6">Closed</span>
+            {% endif %}
+        </div>
+
+    </div>
+
+    <div class="card-body">
+
+        <table class="table table-bordered table-hover align-middle complaint-table">
+
+            <tr>
+                <th width="220">Crime Category</th>
+                <td><span class="badge bg-secondary fs-6">{{ complaint.category }}</span></td>
+            </tr>
+
+            <tr>
+                <th>Complaint Title</th>
+                <td>{{ complaint.title }}</td>
+            </tr>
+
+            <tr>
+                <th>Description</th>
+                <td>{{ complaint.description }}</td>
+            </tr>
+
+            <tr>
+                <th>Crime Location</th>
+                <td>📍 {{ complaint.location }}</td>
+            </tr>
+
+            <tr>
+                <th>Crime Date</th>
+                <td>{{ complaint.crime_date|date:"d M Y" }}</td>
+            </tr>
+
+            <tr>
+                <th>Assigned Officer</th>
+                <td>
+                    {% if complaint.assigned_officer %}
+                        👮 {{ complaint.assigned_officer.username }}
+                    {% else %}
+                        <span class="text-muted">Not Assigned</span>
+                    {% endif %}
+                </td>
+            </tr>
+
+            <tr>
+                <th>Police Remarks</th>
+                <td>
+                    {% if complaint.remarks %}
+                        {{ complaint.remarks }}
+                    {% else %}
+                        <span class="text-muted">No Remarks Yet</span>
+                    {% endif %}
+                </td>
+            </tr>
+
+            <tr>
+                <th>Evidence</th>
+                <td>
+                    {% if complaint.evidence %}
+                        <a href="{{ complaint.evidence.url }}" class="btn btn-success btn-sm">
+                            📂 Download Evidence
+                        </a>
+                    {% else %}
+                        <span class="text-muted">No Evidence Uploaded</span>
+                    {% endif %}
+                </td>
+            </tr>
+
+            <tr>
+                <th>Submitted On</th>
+                <td>{{ complaint.created_at|date:"d M Y, h:i A" }}</td>
+            </tr>
+
+            <tr>
+                <th>Last Updated</th>
+                <td>{{ complaint.updated_at|date:"d M Y, h:i A" }}</td>
+            </tr>
+
+        </table>
+
+        <div class="d-flex flex-wrap gap-2 mt-4">
+
+            <a href="{% url 'history' %}" class="btn btn-secondary action-btn">
+                ← Back
+            </a>
+
+            <a href="{% url 'download_pdf' complaint.id %}"
+               class="btn btn-danger action-btn"
+               onclick="return showDownload(this)">
+                📄 Download FIR
+            </a>
+
+            {% if complaint.status == "Pending" %}
+
+                <a href="{% url 'edit_complaint' complaint.id %}"
+                    class="btn btn-warning">
+                         ✏ Edit
+                </a>
+
+                <a href="{% url 'delete_complaint' complaint.id %}"
+                    class="btn btn-outline-danger">
+                     🗑 Delete
+                </a>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+function showDownload(btn) {
+    btn.innerHTML = "⏳ Generating PDF...";
+    btn.classList.add("disabled");
+    btn.style.pointerEvents = "none";
+
+    return true;
+}
+</script>
+{% endblock %}

@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+<div class="card shadow">
+
+    <div class="card-header bg-dark text-white">
+        <h4>📍 Crime Location Map</h4>
+    </div>
+
+    <div class="card-body">
+
+        <h5>{{ complaint.title }}</h5>
+        <p>{{ complaint.location }}</p>
+
+        {% if complaint.latitude and complaint.longitude %}
+
+            <div id="map" style="height:500px;width:100%;"></div>
+
+        {% else %}
+
+            <div class="alert alert-warning">
+                ⚠ Location not available for this complaint
+            </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+</div>
+
+{% if complaint.latitude and complaint.longitude %}
+
+<script>
+function initMap() {
+
+    const location = {
+        lat: parseFloat("{{ complaint.latitude }}"),
+        lng: parseFloat("{{ complaint.longitude }}")
+    };
+
+    const map = new google.maps.Map(document.getElementById("map"), {
+        zoom: 14,
+        center: location
+    });
+
+    new google.maps.Marker({
+        position: location,
+        map: map,
+        title: "{{ complaint.title }}"
+    });
+}
+</script>
+
+<script async
+src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap">
+</script>
+
+{% endif %}
+
+{% endblock %}

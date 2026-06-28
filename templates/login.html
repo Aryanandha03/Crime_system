@@ -1,0 +1,240 @@
+{% extends "base.html" %}
+
+{% block title %}
+Citizen Login
+{% endblock %}
+
+{% block content %}
+<style>
+
+:root{
+    --primary:#2563eb;
+    --primary-dark:#1e40af;
+    --secondary:#0f172a;
+    --light:#f8fafc;
+    --border:#e2e8f0;
+}
+
+body{
+    background:linear-gradient(135deg,#eef4ff,#f8fbff);
+}
+
+/* Full Page */
+.login-bg{
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:40px 20px;
+}
+
+/* Login Card */
+.login-card{
+    background:#ffffff;
+    border:none;
+    border-radius:20px;
+    overflow:hidden;
+    box-shadow:0 20px 50px rgba(0,0,0,.12);
+    transition:.35s;
+}
+
+.login-card:hover{
+    transform:translateY(-6px);
+    box-shadow:0 25px 60px rgba(0,0,0,.18);
+}
+
+/* Header */
+.login-card .card-header{
+    background:linear-gradient(135deg,var(--primary),var(--primary-dark));
+    color:white;
+}
+
+.login-card .display-4{
+    font-size:55px;
+}
+
+/* Labels */
+.form-label{
+    font-weight:600;
+    color:#334155;
+}
+
+/* Inputs */
+.form-control{
+    height:50px;
+    border-radius:12px;
+    border:1px solid var(--border);
+    transition:.3s;
+    box-shadow:none!important;
+}
+
+.form-control:focus{
+    border-color:var(--primary);
+    box-shadow:0 0 0 .2rem rgba(37,99,235,.15)!important;
+}
+
+/* Buttons */
+.btn-warning{
+    background:#f59e0b;
+    border:none;
+    font-weight:600;
+    border-radius:12px;
+    padding:12px;
+}
+
+.btn-warning:hover{
+    background:#d97706;
+    transform:translateY(-2px);
+}
+
+.btn-outline-light{
+    color:var(--primary);
+    border:2px solid var(--primary);
+    background:white;
+    font-weight:600;
+    border-radius:12px;
+}
+
+.btn-outline-light:hover{
+    background:var(--primary);
+    color:white;
+}
+
+/* Animation */
+.btn-glow{
+    transition:.3s;
+}
+
+.btn-glow:hover{
+    transform:translateY(-2px);
+    box-shadow:0 10px 25px rgba(37,99,235,.25);
+}
+
+/* Divider */
+hr{
+    opacity:.15;
+}
+
+/* Register Text */
+.text-center p{
+    color:#64748b;
+}
+
+/* Alert */
+.alert{
+    border-radius:12px;
+    border:none;
+}
+
+/* Mobile */
+@media(max-width:768px){
+
+.login-card{
+    margin:20px;
+}
+
+.login-card .display-4{
+    font-size:45px;
+}
+
+}
+
+</style>
+
+<div class="login-bg">
+
+<div class="col-lg-5 col-md-7">
+
+    <div class="card login-card shadow-lg border-0">
+
+        <div class="card-header text-center py-4 border-0">
+
+            <div class="display-4">🔐</div>
+
+            <h3 class="fw-bold mt-2">Secure Login</h3>
+
+            <p class="mb-0 text-light">
+                Crime Reporting System Access
+            </p>
+
+        </div>
+
+        <div class="card-body p-4">
+
+            {% if error %}
+                <div class="alert alert-danger">
+                    {{ error }}
+                </div>
+            {% endif %}
+
+            <form method="POST">
+                {% csrf_token %}
+
+                
+                <!-- Username -->
+                <div class="mb-3">
+                   <label class="form-label">Username</label>
+
+                       <input type="text"
+                        name="username"
+                        class="form-control"
+                        placeholder="Enter username"
+                        pattern="^[A-Za-z][A-Za-z0-9_]{3,19}$"
+                        required
+                        oninvalid="this.setCustomValidity('Username must start with a letter and contain only letters, numbers, and underscore (_). Length: 4–20 characters.')"
+                        oninput="this.setCustomValidity('')">
+                    
+                </div>
+
+                <!-- Password -->
+                <div class="mb-3">
+                    <label class="form-label">Password</label>
+
+                    <div class="input-group">
+
+                        <input type="password"
+                               id="password"
+                               name="password"
+                               class="form-control"
+                               placeholder="Enter password"
+                               required>
+
+                       
+                    </div>
+                </div>
+                            <a href="{% url 'password_reset' %}">Forgot Password?</a>
+                <button class="btn btn-warning w-100 btn-glow">
+                    🚀 Login
+                </button>
+
+            </form>
+
+            <hr class="text-light">
+
+            <div class="text-center">
+                
+
+                <p>Don't have an account?</p>
+
+                <a href="/register/" class="btn btn-outline-light btn-glow">
+                    Create Account
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+</div>
+
+<script>
+function togglePassword() {
+    const password = document.getElementById("password");
+    password.type = password.type === "password" ? "text" : "password";
+}
+</script>
+
+{% endblock %}

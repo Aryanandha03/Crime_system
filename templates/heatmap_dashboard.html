@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+<div class="card shadow">
+
+    <div class="card-header bg-danger text-white">
+        <h4>📊 Crime Heatmap (Location Wise)</h4>
+    </div>
+
+    <div class="card-body">
+
+        <canvas id="heatmapChart"></canvas>
+
+    </div>
+
+</div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+
+const labels = JSON.parse('{{ labels|escapejs }}');
+const values = JSON.parse('{{ values|escapejs }}');
+
+if (labels.length === 0) {
+    document.getElementById("heatmapChart").outerHTML =
+        "<p class='text-muted'>No data available</p>";
+} else {
+
+    const ctx = document.getElementById("heatmapChart").getContext("2d");
+
+    new Chart(ctx, {
+        type: "bar",
+        data: {
+            labels: labels,
+            datasets: [{
+                label: "Crime Count by Location",
+                data: values,
+                backgroundColor: "#dc3545"
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+}
+
+</script>
+
+{% endblock %}
