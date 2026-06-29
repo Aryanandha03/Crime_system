@@ -27,7 +27,7 @@ urlpatterns = [
 
     # ADMIN
     path("admin-dashboard/", views.admin_dashboard, name="admin_dashboard"),
-    path("assign/<int:id>/", views.assign_officer, name="assign_officer"),
+    path("assign/<int:complaint_id>/", views.assign_officer, name="assign_officer"),
     path("analytics/", views.analytics, name="analytics"),
     path("reports/", views.reports, name="reports"),
 

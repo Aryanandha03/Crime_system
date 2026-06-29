@@ -63,7 +63,9 @@ def user_logout(request):
 # ---------------- CITIZEN DASHBOARD ----------------
 @login_required
 def citizen_dashboard(request):
-    complaints = Complaint.objects.filter(user=request.user)
+    complaints = Complaint.objects.filter(
+        user=request.user
+    ).order_by("-created_at")
 
     return render(request, "citizen_dashboard.html", {
         "complaints": complaints,
@@ -103,13 +105,14 @@ def submit_complaint(request):
 # ---------------- POLICE DASHBOARD ----------------
 @login_required
 def police_dashboard(request):
+
     if not request.user.groups.filter(name="police").exists():
         return redirect("home")
 
     complaints = Complaint.objects.filter(
-        assigned_officer=request.user
+        assigned_officer_id=request.user.id
     ).order_by("-created_at")
-
+    print("LOGGED USER ID:", request.user.id)
     return render(request, "police_dashboard.html", {
         "complaints": complaints,
         "total": complaints.count(),
@@ -118,22 +121,6 @@ def police_dashboard(request):
         "closed": complaints.filter(status="Closed").count(),
     })
 # ---------------- OFFICER DASHBOARD ----------------
-@login_required
-def officer_dashboard(request):
-    if not request.user.groups.filter(name="police").exists():
-        return redirect("home")
-
-    complaints = Complaint.objects.filter(
-        assigned_officer=request.user
-    ).order_by("-created_at")
-
-    return render(request, "officer_dashboard.html", {
-        "complaints": complaints,
-        "total": complaints.count(),
-        "pending": complaints.filter(status="Assigned").count(),
-        "investigating": complaints.filter(status="Investigating").count(),
-        "closed": complaints.filter(status="Closed").count(),
-    })
 
 
 # ---------------- UPDATE CASE ----------------
@@ -208,30 +195,22 @@ def admin_dashboard(request):
     }
 
     return render(request, "admin/dashboard.html", context)
-# ---------------- ASSIGN OFFICER ----------------
-@staff_member_required
-def assign_officer(request, id):
-    complaint = get_object_or_404(Complaint, id=id)
+# ---------------- ASSIGN OFFICER -------------
+def assign_officer(request, complaint_id):
+    complaint = Complaint.objects.get(id=complaint_id)
+    officers = User.objects.filter(groups__name="Police")
 
     if request.method == "POST":
         officer_id = request.POST.get("officer_id")
-
-        officer = get_object_or_404(User, id=officer_id)
+        officer = User.objects.get(id=officer_id)
 
         complaint.assigned_officer = officer
-        complaint.status = "Assigned"
         complaint.save()
-
-        return redirect("admin_dashboard")
-
-    police_users = User.objects.filter(groups__name="police")
 
     return render(request, "assign_officer.html", {
         "complaint": complaint,
-        "police_users": police_users
+        "officers": officers
     })
-
-
 # ---------------- ANALYTICS ----------------
 @staff_member_required
 def analytics(request):

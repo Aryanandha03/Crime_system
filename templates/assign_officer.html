@@ -32,17 +32,17 @@
 
                         <div class="mb-3">
                             <label class="form-label fw-bold">Select Police Officer</label>
+                            
+                        <select name="officer_id" class="form-select" required>
+                                 <option value="">-- Choose Officer --</option>
 
-                            <select name="officer_id" class="form-select" required>
-                                <option value="">-- Choose Officer --</option>
-
-                                {% for officer in police_users %}
-                                    <option value="{{ officer.id }}">
-                                        {{ officer.username }}
-                                    </option>
-                                {% endfor %}
-
-                            </select>
+                                 {% for officer in officers %}
+                                <option value="{{ officer.id }}">
+                                {{ officer.get_full_name }}
+                                </option>
+                                 {% endfor %}
+                        </select>
+                            
                         </div>
 
                         <div class="d-grid gap-2">
