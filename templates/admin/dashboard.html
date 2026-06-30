@@ -19,32 +19,16 @@ Admin Dashboard
 </div>
 
 <div class="mb-4">
-
-    <a href="{% url 'reports' %}" class="btn btn-success">
-
-        📊 Reports
-
-    </a>
-
-    <a href="{% url 'analytics' %}" class="btn btn-primary">
-
-        📈 Analytics
-
-    </a>
-
+    <a href="{% url 'reports' %}" class="btn btn-success">📊 Reports</a>
+    <a href="{% url 'analytics' %}" class="btn btn-primary">📈 Analytics</a>
 </div>
-
-<!-- STATS -->
 
 <!-- SEARCH FILTER -->
 <form method="GET" class="row g-3 mb-4">
 
     <div class="col-md-4">
-        <input
-            type="text"
-            name="search"
-            class="form-control"
-            placeholder="Search Username / Case No / Title / Category">
+        <input type="text" name="search" class="form-control"
+               placeholder="Search Username / Case No / Title / Category">
     </div>
 
     <div class="col-md-3">
@@ -59,12 +43,7 @@ Admin Dashboard
 
     <div class="col-md-3">
         <select name="category" class="form-select">
-            
-
-            
-
             <option value="">All Crime Categories</option>
-
             <option value="Theft">Theft</option>
             <option value="Robbery">Robbery</option>
             <option value="Murder">Murder</option>
@@ -78,18 +57,11 @@ Admin Dashboard
             <option value="Vehicle Theft">Vehicle Theft</option>
             <option value="Traffic Violation">Traffic Violation</option>
             <option value="Other">Other</option>
-
         </select>
-            
-        
-
-        
     </div>
 
     <div class="col-md-2">
-        <button class="btn btn-primary w-100">
-            🔍 Search
-        </button>
+        <button class="btn btn-primary w-100">🔍 Search</button>
     </div>
 
 </form>
@@ -116,7 +88,6 @@ Admin Dashboard
                     <th>Remarks</th>
                     <th>Submitted</th>
                     <th>Actions</th>
-                    
                 </tr>
             </thead>
 
@@ -128,7 +99,9 @@ Admin Dashboard
 
                     <td><strong>#{{ complaint.complaint_number }}</strong></td>
 
-                    <td>{{ complaint.username }}</td>
+                    <!-- FIX: username field -->
+                    <td>{{ complaint.user.username }}</td>
+
                     <td>
                         <span class="badge bg-secondary">
                             {{ complaint.category }}
@@ -149,20 +122,17 @@ Admin Dashboard
                         {% endif %}
                     </td>
 
+                    <!-- FIX: officer field -->
                     <td>
                         {% if complaint.assigned_officer %}
-                            👮 {{ complaint.assigned_officer }}
+                            👮 {{ complaint.assigned_officer.username }}
                         {% else %}
                             <span class="text-muted">Not Assigned</span>
                         {% endif %}
                     </td>
 
                     <td>
-                        {% if complaint.remarks %}
-                            {{ complaint.remarks }}
-                        {% else %}
-                            <span class="text-muted">No Remarks</span>
-                        {% endif %}
+                        {{ complaint.remarks|default:"No Remarks" }}
                     </td>
 
                     <td>
@@ -210,7 +180,7 @@ Admin Dashboard
             {% empty %}
 
                 <tr>
-                    <td colspan="8" class="text-center py-5">
+                    <td colspan="9" class="text-center py-5">
                         <h5>No complaints found</h5>
                     </td>
                 </tr>

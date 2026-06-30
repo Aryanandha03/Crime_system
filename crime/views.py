@@ -11,6 +11,10 @@ import json
 from .forms import RegisterForm, ComplaintForm
 from .models import Complaint
 
+import random
+
+def generate_otp():
+    return str(random.randint(100000, 999999))
 
 # ---------------- HOME ----------------
 def home(request):
@@ -32,7 +36,7 @@ def register(request):
     return render(request, "register.html", {"form": form})
 
 
-# ---------------- LOGIN ----------------
+# ---------------- LOGIN ---------------
 def user_login(request):
     if request.method == "POST":
         user = authenticate(
@@ -197,32 +201,57 @@ def admin_dashboard(request):
     return render(request, "admin/dashboard.html", context)
 # ---------------- ASSIGN OFFICER -------------
 def assign_officer(request, complaint_id):
-    complaint = Complaint.objects.get(id=complaint_id)
-    officers = User.objects.filter(groups__name="Police")
+    complaint = get_object_or_404(Complaint, id=complaint_id)
+
+    officers = User.objects.filter(groups__name="police")
 
     if request.method == "POST":
         officer_id = request.POST.get("officer_id")
         officer = User.objects.get(id=officer_id)
 
-        complaint.assigned_officer = officer
+        complaint.assigned_officer = officer   # ✔️ CORRECT FIELD
+        complaint.status = "Assigned"
         complaint.save()
+
+        return redirect("admin_dashboard")
 
     return render(request, "assign_officer.html", {
         "complaint": complaint,
         "officers": officers
     })
+
 # ---------------- ANALYTICS ----------------
-@staff_member_required
+from django.shortcuts import render
+from django.db.models import Count
+from django.db.models.functions import TruncMonth
+from .models import Complaint
+import json
+
 def analytics(request):
-    data = {
-        "Pending": Complaint.objects.filter(status="Pending").count(),
-        "Assigned": Complaint.objects.filter(status="Assigned").count(),
-        "Investigating": Complaint.objects.filter(status="Investigating").count(),
-        "Closed": Complaint.objects.filter(status="Closed").count(),
-    }
+
+    # STATUS DATA
+    status_qs = Complaint.objects.values('status').annotate(total=Count('id'))
+    labels = [x['status'] for x in status_qs]
+    values = [x['total'] for x in status_qs]
+
+    # CATEGORY DATA
+    category_qs = Complaint.objects.values('category').annotate(total=Count('id'))
+    category_labels = [x['category'] for x in category_qs]
+    category_values = [x['total'] for x in category_qs]
+
+    # MONTHLY DATA
+    monthly_qs = Complaint.objects.annotate(
+        month=TruncMonth('created_at')
+    ).values('month').annotate(total=Count('id')).order_by('month')
+
+    monthly_values = [x['total'] for x in monthly_qs]
 
     return render(request, "analytics.html", {
-        "data": json.dumps(data)
+        "labels": json.dumps(labels),
+        "values": json.dumps(values),
+        "category_labels": json.dumps(category_labels),
+        "category_values": json.dumps(category_values),
+        "monthly_values": json.dumps(monthly_values),
     })
 
 
